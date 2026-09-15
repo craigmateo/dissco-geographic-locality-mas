@@ -2,6 +2,8 @@
 
 Prototype Machine Annotation Service (MAS) for linking biodiversity specimen locality data with Indigenous place names and cultural geographies.
 
+This project was initiated for the **DiSSCo MAS Hackathon 2026** and explores a prototype Machine Annotation Service for linking biodiversity specimen locality data with Indigenous place names and cultural geographies.
+
 ## Overview
 
 Natural history collections often contain geographic information recorded using historical, colonial, administrative, or otherwise externally imposed place names. These locality descriptions may not reflect Indigenous names, languages, territorial relationships, or cultural understandings of place.
