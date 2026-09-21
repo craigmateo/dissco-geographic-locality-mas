@@ -156,6 +156,7 @@ DiSSCo MAS Hackathon 2026 — Geographic Place Names team.
 * DiSSCo Data Models: https://terms.dissco.tech/
 * DiSSCo JSON Schemas: https://schemas.dissco.tech/schemas/
 * Example MAS implementation: https://github.com/DiSSCo/demo-enrichment-service-image
+* Native Lands: https://native-land.ca/maps/native-land
 
 ## License
 
