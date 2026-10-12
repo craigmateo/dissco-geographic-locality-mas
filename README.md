@@ -157,14 +157,29 @@ The repository also contains `data/benchmark-10.json`, a small collection of rea
 
 ```text
 .
-├── data/                         # Example specimens and benchmark records
-├── docs/                         # Architecture and project documentation
-├── src/geographic_locality_mas/  # Python implementation
-├── tests/                        # Automated tests
-├── Makefile                      # Development commands
-├── pyproject.toml                # Python project configuration
+├── .github/
+│   └── workflows/
+│       └── tests.yml                # GitHub Actions automated tests
+├── data/
+│   ├── benchmark-10.json           # Ten real DiSSCo locality examples
+│   └── sample-specimen.json        # Example specimen for the demo
+├── docs/                           # Architecture and project documentation
+├── scripts/
+│   └── fetch_specimens.py          # Retrieve specimens from the live DiSSCo API
+├── src/
+│   └── geographic_locality_mas/
+│       ├── __init__.py
+│       ├── cli.py                   # Command-line demonstration
+│       └── extraction.py            # Extract locality information
+├── tests/
+│   └── test_extraction.py          # Automated extraction tests
+├── .gitignore
+├── Makefile                        # setup, test, demo, fetch
+├── pyproject.toml                  # Python package and dependencies
 └── README.md
 ```
+
+The project currently provides locality extraction and live DiSSCo API access. Gazetteer matching, geographic validation, and MAS integration are planned components that can be developed as separate workstreams during the hackathon.
 
 ## Collaboration
 
