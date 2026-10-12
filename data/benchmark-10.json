@@ -1,0 +1,92 @@
+[
+  {
+    "specimen_id": "https://doi.org/SANDBOX/CYS-3C4-G29",
+    "specimen_name": "Linaria pelisseriana (L.) Mill.",
+    "organisation": "Senckenberg Research Institute and Natural History Museum Frankfurt/M",
+    "country": "Greece",
+    "locality": "Milos, sw. Zefira, 30m üdM",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "specimen_id": "https://doi.org/SANDBOX/AP4-Y8Z-AE0",
+    "specimen_name": "Trifolium arvense L.",
+    "organisation": "Senckenberg Research Institute and Natural History Museum Frankfurt/M",
+    "country": "Greece",
+    "locality": "Milos, zwischen Zefiria und dem Krater von Tsingrados",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "specimen_id": "https://doi.org/SANDBOX/SFC-QGA-95Z",
+    "specimen_name": "Charon grayi (Gervais, 1842)",
+    "organisation": "Naturalis Biodiversity Center",
+    "country": null,
+    "locality": "Batavia",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "specimen_id": "https://doi.org/SANDBOX/GY3-JY2-FSQ",
+    "specimen_name": "Ixodes ricinus Linnaeus, 1758",
+    "organisation": "Naturalis Biodiversity Center",
+    "country": "The Netherlands",
+    "locality": "Rijnsburg",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "specimen_id": "https://doi.org/SANDBOX/D1H-78R-2WE",
+    "specimen_name": "Isometrus maculatus (DeGeer, 1778)",
+    "organisation": "Naturalis Biodiversity Center",
+    "country": null,
+    "locality": "Tapanoeli",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "specimen_id": "https://doi.org/SANDBOX/WY8-81E-23G",
+    "specimen_name": "Phoxichilidium femoratum (Rathke, 1799)",
+    "organisation": "Naturalis Biodiversity Center",
+    "country": null,
+    "locality": "Scheveningen",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "specimen_id": "https://doi.org/SANDBOX/LSN-WT5-SL3",
+    "specimen_name": "Pallenopsis verrucosa Stock, 1953",
+    "organisation": "Naturalis Biodiversity Center",
+    "country": "Philippines",
+    "locality": "Basilan Strait",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "specimen_id": "https://doi.org/SANDBOX/L9L-8GD-0WM",
+    "specimen_name": "Bothriurus Peters, 1861",
+    "organisation": "Naturalis Biodiversity Center",
+    "country": "Unknown",
+    "locality": "No locality",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "specimen_id": "https://doi.org/SANDBOX/LKP-RMW-5M7",
+    "specimen_name": "Atractides C. L. Koch, 1837",
+    "organisation": "Naturalis Biodiversity Center",
+    "country": "Finland",
+    "locality": "Small stream in young pine forest, 70 km N of Rovaniemi",
+    "latitude": null,
+    "longitude": null
+  },
+  {
+    "specimen_id": "https://doi.org/SANDBOX/8XB-YZH-Z79",
+    "specimen_name": "Arrenurus Dugès, 1834",
+    "organisation": "Naturalis Biodiversity Center",
+    "country": "Bangladesh",
+    "locality": "Katakhali, Hatiya Jahajmara, mouth of river, 22°7'18.7536\"N 91°0'53.144\"E",
+    "latitude": null,
+    "longitude": null
+  }
+]

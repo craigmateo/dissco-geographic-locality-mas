@@ -1,0 +1,13 @@
+{
+  "id": "https://doi.org/SANDBOX/CYS-3C4-G29",
+  "attributes": {
+    "ods:hasEvents": [
+      {
+        "ods:hasLocation": {
+          "dwc:country": "Greece",
+          "dwc:locality": "Milos, sw. Zefira, 30m üdM"
+        }
+      }
+    ]
+  }
+}

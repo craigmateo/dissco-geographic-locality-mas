@@ -1,163 +1,197 @@
 # DiSSCo Geographic Locality MAS
 
-Prototype Machine Annotation Service (MAS) for linking biodiversity specimen locality data with Indigenous place names and cultural geographies.
+A collaborative prototype Machine Annotation Service (MAS) for enriching geographic locality information in biodiversity specimen records.
 
-This project was initiated for the **DiSSCo MAS Hackathon 2026** and explores a prototype Machine Annotation Service for linking biodiversity specimen locality data with Indigenous place names and cultural geographies.
+Developed for the **DiSSCo MAS Hackathon 2026**.
 
 ## Overview
 
-Natural history collections often contain geographic information recorded using historical, colonial, administrative, or otherwise externally imposed place names. These locality descriptions may not reflect Indigenous names, languages, territorial relationships, or cultural understandings of place.
+Natural history collections contain geographic information recorded in many forms: place names, historical names, multilingual descriptions, coordinates, and references to geographic features.
 
-This project explores how a DiSSCo Machine Annotation Service could identify geographic localities in specimen records and link them to Indigenous place names and related geographic knowledge.
+Some records contain detailed locality descriptions but lack structured coordinates or geographic identifiers. Others contain coordinates that could benefit from validation or additional geographic context.
 
-Rather than replacing existing locality information, the service is intended to add contextual information through annotations while preserving the original specimen record.
+This project explores how a DiSSCo Machine Annotation Service can enrich geographic locality information while preserving the original specimen record, documenting provenance, and representing uncertainty.
 
-## Hackathon context
+The project also provides a foundation for more specialized enrichment, including **Indigenous place names and cultural geographies**, which formed part of the original project proposal.
 
-This project was initiated for the DiSSCo MAS Hackathon 2026.
+## Project objectives
 
-The hackathon project focuses on developing and testing a prototype Machine Annotation Service using specimen data available through the DiSSCo sandbox.
+Our shared goal is to develop a prototype service that can:
 
-## Initial research question
+1. Extract geographic information from DiSSCo Digital Specimens.
+2. Identify geographic entities mentioned in locality descriptions.
+3. Link geographic entities to external gazetteers and persistent identifiers.
+4. Evaluate candidate matches using available geographic context.
+5. Return structured enrichment suggestions with provenance and uncertainty.
+6. Integrate these results into the DiSSCo Machine Annotation Service framework.
 
-How can biodiversity specimen locality records be computationally linked to Indigenous place names while preserving provenance, uncertainty, and the original recorded locality?
+The original specimen data should remain unchanged.
 
-## Possible workflow
+## Potential workstreams
 
-The prototype may:
+The following are possible areas of contribution. They are not fixed assignments, and the team will determine priorities collaboratively.
 
-1. Extract locality information from a DiSSCo Digital Specimen.
-2. Identify candidate geographic entities from structured and verbatim locality fields.
-3. Query one or more external geographic or cultural gazetteers.
-4. Identify corresponding Indigenous place names where available.
-5. Record information about the language, source, geographic entity, and provenance of each match.
-6. Return the result as a DiSSCo annotation rather than modifying the original specimen record.
+### 1. Geographic locality extraction
 
-## Example
+Extract locality descriptions, countries, administrative regions, coordinates, and other geographic information from DiSSCo Digital Specimens.
 
-A specimen might contain:
+Potential tasks include parsing coordinates embedded in text, recognizing geographic features, and interpreting simple spatial expressions.
 
-```text
-country: Canada
-stateProvince: Ontario
-locality: Toronto
-decimalLatitude: 43.65
-decimalLongitude: -79.38
+### 2. Gazetteer matching and geographic identifiers
+
+Identify geographic entities using external sources such as Wikidata, GeoNames, or other suitable gazetteers.
+
+Explore candidate ranking, ambiguity, alternative spellings, and persistent identifiers.
+
+### 3. Historical and multilingual place names
+
+Investigate locality descriptions containing historical names, variant spellings, or multiple languages.
+
+Examples include historical regional names and descriptions combining place names with directional information.
+
+### 4. Indigenous place names and cultural geographies (optional)
+
+Explore whether specimen locality records can be linked to Indigenous place names, languages, and geographic knowledge using appropriate, identifiable sources.
+
+This workstream was part of the original project concept and remains an option for interested team members.
+
+It raises additional considerations involving provenance, cultural context, source authority, data governance, and the representation of Indigenous geographic knowledge.
+
+The aim would be to add contextual information rather than replace existing locality descriptions or assume that different geographic naming systems are interchangeable.
+
+### 5. Geographic validation
+
+Investigate whether existing coordinates are consistent with locality descriptions, countries, and geographic features.
+
+Potential outputs include validation flags and uncertainty information rather than automatic corrections.
+
+### 6. DiSSCo MAS integration
+
+Develop the interface needed to run the enrichment workflow as a DiSSCo Machine Annotation Service and return results in an appropriate annotation format.
+
+## Initial dataset
+
+We explored the DiSSCo Sandbox API and retrieved an initial sample of 100 digital specimens.
+
+In this exploratory sample:
+
+- 69 records contained locality descriptions.
+- 80 contained country information.
+- 34 contained structured coordinates.
+- 35 contained locality descriptions but lacked structured coordinates.
+
+These findings are from the first 100 returned records and should not be interpreted as representative statistics for the entire DiSSCo collection.
+
+We selected ten example records covering different geographic interpretation challenges.
+
+The benchmark is available at `data/benchmark-10.json`.
+
+Examples include:
+
+- `Rijnsburg` — straightforward geographic matching.
+- `Batavia` — historical or ambiguous place name.
+- `Milos, sw. Zefira, 30m üdM` — multilingual spatial description.
+- `70 km N of Rovaniemi` — relative geographic position.
+- `Basilan Strait` — geographic feature.
+- Bangladesh locality descriptions containing coordinates embedded in text.
+
+## Getting started
+
+Requirements: Python 3.10 or newer, Git, and Make.
+
+Clone the repository:
+
+```bash
+git clone https://github.com/craigmateo/dissco-geographic-locality-mas.git
+cd dissco-geographic-locality-mas
 ```
 
-A resulting annotation might link the locality to additional place-name information such as:
+Install the development environment:
 
-```json
-{
-  "recordedLocality": "Toronto",
-  "candidatePlaceNames": [
-    {
-      "name": "...",
-      "language": "...",
-      "source": "...",
-      "sourceIdentifier": "...",
-      "confidence": 0.92
-    }
-  ]
-}
+```bash
+make setup
 ```
 
-The exact annotation model will be developed during the project.
+Run the tests:
 
-## Design principles
+```bash
+make test
+```
 
-The project will aim to:
+Run the demonstration:
 
-* preserve the original locality information;
-* avoid treating one geographic name as inherently more authoritative than another;
-* retain provenance for all added information;
-* distinguish between historical, contemporary, administrative, and Indigenous geographic names;
-* represent uncertainty explicitly;
-* avoid inferring Indigenous affiliations or names without an identifiable source;
-* treat Indigenous geographic information as contextual knowledge rather than simply an alternative spelling of an official place name.
+```bash
+make demo
+```
 
-## Data
+The initial demonstration extracts geographic locality information from a sample DiSSCo specimen and outputs structured JSON.
 
-Candidate specimen datasets will be selected from the DiSSCo sandbox.
-
-Useful specimen fields may include:
-
-* `dwc:country`
-* `dwc:stateProvince`
-* `dwc:county`
-* `dwc:municipality`
-* `dwc:locality`
-* `dwc:verbatimLocality`
-* `dwc:decimalLatitude`
-* `dwc:decimalLongitude`
-
-The initial dataset has not yet been selected.
-
-Additional datasets may be considered where their licensing and availability allow them to be used in the DiSSCo hackathon environment.
-
-## External geographic sources
-
-Potential geographic knowledge sources will be evaluated during the project.
-
-Selection criteria include:
-
-* coverage of Indigenous place names;
-* persistent identifiers;
-* provenance information;
-* language information;
-* geographic coordinates or geometries;
-* licensing;
-* API or downloadable data access.
-
-No particular gazetteer is assumed at this stage.
+Live gazetteer resolution and DiSSCo MAS deployment are planned development tasks, not yet implemented.
 
 ## Repository structure
 
 ```text
 .
-├── README.md
-├── docs/
-│   ├── datasets.md
-│   ├── gazetteers.md
-│   └── project-scope.md
-├── examples/
-│   ├── input/
-│   └── output/
-├── src/
-├── tests/
-└── pyproject.toml
+├── data/                         # Example specimens and benchmark records
+├── docs/                         # Architecture and project documentation
+├── src/geographic_locality_mas/  # Python implementation
+├── tests/                        # Automated tests
+├── Makefile                      # Development commands
+├── pyproject.toml                # Python project configuration
+└── README.md
 ```
 
-## Project status
+## Collaboration
 
-Early prototype / research stage.
+This is a collaborative hackathon project. The workstreams are intended as starting points for discussion rather than predetermined assignments.
 
-Current priorities are:
+Contributors are encouraged to:
 
-* select an appropriate DiSSCo specimen dataset;
-* investigate available Indigenous place-name data sources;
-* define the annotation output model;
-* implement a minimal locality-matching workflow;
-* integrate the prototype with the DiSSCo MAS infrastructure.
+1. Discuss or create a GitHub Issue for a proposed task.
+2. Create a feature branch.
+3. Implement a small, testable change.
+4. Open a pull request for review.
+
+Different approaches to geographic enrichment can be developed independently and compared using the shared benchmark.
+
+## Design principles
+
+- Preserve original specimen information.
+- Distinguish source data from inferred or enriched information.
+- Record provenance and persistent identifiers wherever possible.
+- Represent ambiguity and uncertainty explicitly.
+- Avoid assigning precise coordinates without adequate evidence.
+- Support multilingual, historical, and alternative geographic names.
+- Respect the provenance, context, and governance of Indigenous geographic knowledge when relevant.
+- Keep the prototype modular and reproducible.
 
 ## Team
 
 DiSSCo MAS Hackathon 2026 — Geographic Place Names team.
 
-* Craig Frayne
-* Lena Thöle
-* Sushil Awale
-* Wolfgang Bitter
+- Craig Frayne
+- Lena Thöle
+- Sushil Awale
+- Wolfgang Bitter
 
 ## Resources
 
-* DiSSCo Sandbox: https://sandbox.dissco.tech/
-* MAS Developer Documentation: https://dissco.github.io/mas-developers-documentation/
-* DiSSCo Data Models: https://terms.dissco.tech/
-* DiSSCo JSON Schemas: https://schemas.dissco.tech/schemas/
-* Example MAS implementation: https://github.com/DiSSCo/demo-enrichment-service-image
-* Native Lands: https://native-land.ca/maps/native-land
+- [DiSSCo Sandbox](https://sandbox.dissco.tech/)
+- [MAS Developer Documentation](https://dissco.github.io/mas-developers-documentation/)
+- [DiSSCo Data Models](https://terms.dissco.tech/)
+- [DiSSCo JSON Schemas](https://schemas.dissco.tech/schemas/)
+- [Example MAS implementation](https://github.com/DiSSCo/demo-enrichment-service-image)
+
+## Project status
+
+Early working prototype.
+
+**Implemented:** Locality extraction, sample data, command-line demonstration, and initial tests.
+
+**Next steps:** Gazetteer resolution, benchmark evaluation, annotation output, and MAS integration.
+
+The project scope and workstream priorities will be refined collaboratively during the hackathon.
 
 ## License
 
-License to be determined.
+To be determined by the team.
