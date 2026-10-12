@@ -128,6 +128,31 @@ The initial demonstration extracts geographic locality information from a sample
 
 Live gazetteer resolution and DiSSCo MAS deployment are planned development tasks, not yet implemented.
 
+
+### Exploring live DiSSCo data
+
+The repository includes a simple client for the [DiSSCo Sandbox](https://sandbox.dissco.tech/).
+
+After completing `make setup`, run:
+
+```bash
+make fetch
+```
+
+This retrieves five digital specimens from the Sandbox search API and extracts their geographic locality information.
+
+The command requires an internet connection but does not require an API key or DiSSCo account for the currently accessible public search endpoint.
+
+The API endpoint is:
+
+`https://sandbox.dissco.tech/api/digital-specimen/v1/search`
+
+Geographic information is extracted from the nested `ods:hasEvents` → `ods:hasLocation` structure, including coordinates stored in `ods:hasGeoreference`.
+
+The repository also contains `data/benchmark-10.json`, a small collection of real Sandbox locality examples for testing enrichment approaches.
+
+**Current limitations:** The live-data client retrieves the first five records. Filtering, pagination, gazetteer matching, and MAS integration are future development tasks.
+
 ## Repository structure
 
 ```text

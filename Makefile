@@ -11,3 +11,6 @@ test:
 
 demo:
 	$(PYTHON) -m geographic_locality_mas.cli
+
+fetch:
+	$(PYTHON) scripts/fetch_specimens.py
