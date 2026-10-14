@@ -1,0 +1,30 @@
+{
+  "specimen": {
+    "@id": "https://doi.org/SANDBOX/X16-9NF-V0S",
+    "@type": "ods:DigitalSpecimen",
+    "dcterms:identifier": "https://doi.org/SANDBOX/X16-9NF-V0S",
+    "ods:fdoType": "https://doi.org/21.T11148/894b1e6cad57e921764e",
+    "ods:specimenName": "Saxifraga rivularis L.",
+    "ods:organisationName": "University of Oslo",
+    "ods:hasEvents": [
+      {
+        "@type": "ods:Event",
+        "ods:hasLocation": {
+          "@type": "ods:Location",
+          "dwc:country": "Norway",
+          "dwc:county": "Vardø",
+          "dwc:locality": "Vardø by. Ved vannreservoiret",
+          "ods:hasGeoreference": {
+            "@type": "ods:GeoReference",
+            "dwc:decimalLatitude": 70.3725,
+            "dwc:decimalLongitude": 31.1192,
+            "dwc:coordinateUncertaintyInMeters": 707
+          }
+        }
+      }
+    ]
+  },
+  "enrichments": [
+    "indigenous_names"
+  ]
+}

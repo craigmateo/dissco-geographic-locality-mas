@@ -1,0 +1,52 @@
+{
+  "jobId": "https://hdl.handle.net/SANDBOX/JOB-ID",
+  "annotations": [
+    {
+      "@type": "ods:Annotation",
+      "oa:motivation": "ods:adding",
+      "dcterms:creator": {
+        "@id": "https://hdl.handle.net/SANDBOX/MAS-ID",
+        "@type": "schema:SoftwareApplication",
+        "schema:identifier": "https://hdl.handle.net/SANDBOX/MAS-ID",
+        "schema:name": "Geographic Locality MAS",
+        "ods:hasRoles": [
+          {
+            "@type": "schema:Role",
+            "schema:roleName": "machine-annotation-service"
+          }
+        ],
+        "ods:hasIdentifiers": [
+          {
+            "@id": "https://hdl.handle.net/SANDBOX/MAS-ID",
+            "@type": "ods:Identifier",
+            "dcterms:type": "Handle",
+            "dcterms:title": "Handle",
+            "dcterms:identifier": "https://hdl.handle.net/SANDBOX/MAS-ID",
+            "ods:isPartOfLabel": false,
+            "ods:gupriLevel": "GloballyUniqueStablePersistentResolvableFDOCompliant",
+            "ods:identifierStatus": "Preferred"
+          }
+        ]
+      },
+      "dcterms:created": "2026-10-14T11:11:13.440Z",
+      "oa:hasTarget": {
+        "dcterms:identifier": "https://doi.org/SANDBOX/X16-9NF-V0S",
+        "@id": "https://doi.org/SANDBOX/X16-9NF-V0S",
+        "ods:fdoType": "https://doi.org/21.T11148/894b1e6cad57e921764e",
+        "@type": "https://doi.org/21.T11148/894b1e6cad57e921764e",
+        "oa:hasSelector": {
+          "@type": "ods:ClassSelector",
+          "ods:class": "$['ods:hasEntityRelationships']"
+        }
+      },
+      "oa:hasBody": {
+        "@type": "oa:TextualBody",
+        "oa:value": [
+          "{\"@type\": \"ods:EntityRelationship\", \"dwc:relationshipOfResource\": \"hasIndigenousPlaceName\", \"dwc:relatedResourceID\": \"https://stadnamn.kartverket.no/fakta/263614\", \"ods:relatedResourceURI\": \"https://stadnamn.kartverket.no/fakta/263614\", \"dwc:relationshipEstablishedDate\": \"2026-10-14T11:11:13.440Z\", \"dwc:relationshipRemarks\": \"Indigenous-language name(s) of this place: Synth-0167 (Northern Sámi, sme; name status hovednavn). Source: Kartverket SSR, place 263614. Matched on locality text 'Vardø' (gazetteer name Vardø, nor). Official name in a state gazetteer (Kartverket SSR), not community-sourced Indigenous knowledge. © Kartverket, Sentralt stedsnavnregister (SSR), CC BY 4.0. Review status: not reviewed by Sámi representatives.\", \"ods:hasAgents\": [{\"@id\": \"https://hdl.handle.net/SANDBOX/MAS-ID\", \"@type\": \"schema:SoftwareApplication\", \"schema:identifier\": \"https://hdl.handle.net/SANDBOX/MAS-ID\", \"schema:name\": \"Geographic Locality MAS\", \"ods:hasRoles\": [{\"@type\": \"schema:Role\", \"schema:roleName\": \"machine-annotation-service\"}], \"ods:hasIdentifiers\": [{\"@id\": \"https://hdl.handle.net/SANDBOX/MAS-ID\", \"@type\": \"ods:Identifier\", \"dcterms:type\": \"Handle\", \"dcterms:title\": \"Handle\", \"dcterms:identifier\": \"https://hdl.handle.net/SANDBOX/MAS-ID\", \"ods:isPartOfLabel\": false, \"ods:gupriLevel\": \"GloballyUniqueStablePersistentResolvableFDOCompliant\", \"ods:identifierStatus\": \"Preferred\"}]}]}"
+        ],
+        "dcterms:references": "https://ws.geonorge.no/stedsnavn/v1/punkt?nord=70.3725&ost=31.1192&koordsys=4258&radius=2000&utkoordsys=4258&treffPerSide=500&side=1",
+        "ods:score": 0.9
+      }
+    }
+  ]
+}

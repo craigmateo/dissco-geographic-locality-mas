@@ -1,0 +1,116 @@
+{
+  "service": "geographic-locality-value-service",
+  "version": "0.2.0",
+  "specimen_id": "https://doi.org/SANDBOX/X16-9NF-V0S",
+  "created": "2026-10-14T11:11:13.436Z",
+  "review_status": "not reviewed by Sámi representatives",
+  "results": [
+    {
+      "event_index": 0,
+      "target": "$['ods:hasEvents'][0]['ods:hasLocation']",
+      "location": {
+        "specimen_id": "https://doi.org/SANDBOX/X16-9NF-V0S",
+        "event_index": 0,
+        "country": "Norway",
+        "country_code": null,
+        "state_province": null,
+        "county": "Vardø",
+        "municipality": null,
+        "locality": "Vardø by. Ved vannreservoiret",
+        "verbatim_locality": null,
+        "latitude": 70.3725,
+        "longitude": 31.1192,
+        "coordinate_uncertainty_m": 707.0
+      },
+      "indigenous_names": {
+        "specimen_id": "https://doi.org/SANDBOX/X16-9NF-V0S",
+        "event_index": 0,
+        "status": "match",
+        "gazetteer": "Kartverket SSR",
+        "query": {
+          "url": "https://ws.geonorge.no/stedsnavn/v1/punkt?nord=70.3725&ost=31.1192&koordsys=4258&radius=2000&utkoordsys=4258&treffPerSide=500&side=1",
+          "latitude": 70.3725,
+          "longitude": 31.1192,
+          "radius_m": 2000,
+          "coordinate_uncertainty_m": 707.0
+        },
+        "matches": [
+          {
+            "name": "Synth-0167",
+            "language": "sme",
+            "language_name": "Northern Sámi",
+            "language_category": "indigenous",
+            "gazetteer_language": "Nordsamisk",
+            "name_status": "hovednavn",
+            "spelling_status": "foreslått og prioritert",
+            "gazetteer": "Kartverket SSR",
+            "place_id": "263614",
+            "place_uri": "https://stadnamn.kartverket.no/fakta/263614",
+            "name_id": "263614-3",
+            "feature_type": "By",
+            "match_type": "name",
+            "matched_on": {
+              "field": "locality",
+              "text": "Vardø",
+              "gazetteer_name": "Vardø",
+              "gazetteer_language": "nor"
+            },
+            "distance_m": 360,
+            "score": 0.9,
+            "attribution": "© Kartverket, Sentralt stedsnavnregister (SSR), CC BY 4.0",
+            "licence": "https://creativecommons.org/licenses/by/4.0/",
+            "caveats": [
+              "Official name in a state gazetteer (Kartverket SSR), not community-sourced Indigenous knowledge."
+            ]
+          }
+        ],
+        "minority_language_names": [
+          {
+            "name": "Synth-0168",
+            "language": "fkv",
+            "language_name": "Kven",
+            "language_category": "national_minority",
+            "gazetteer_language": "Kvensk",
+            "name_status": "hovednavn",
+            "spelling_status": "vedtatt",
+            "gazetteer": "Kartverket SSR",
+            "place_id": "263614",
+            "place_uri": "https://stadnamn.kartverket.no/fakta/263614",
+            "name_id": "263614-2",
+            "feature_type": "By",
+            "match_type": "name",
+            "matched_on": {
+              "field": "locality",
+              "text": "Vardø",
+              "gazetteer_name": "Vardø",
+              "gazetteer_language": "nor"
+            },
+            "distance_m": 360,
+            "score": 0.9,
+            "attribution": "© Kartverket, Sentralt stedsnavnregister (SSR), CC BY 4.0",
+            "licence": "https://creativecommons.org/licenses/by/4.0/",
+            "caveats": [
+              "Official name in a state gazetteer (Kartverket SSR), not community-sourced Indigenous knowledge.",
+              "Kven is a national minority language, not an Indigenous language: listed apart and not annotated as an Indigenous name."
+            ]
+          }
+        ],
+        "nearby": [],
+        "summary": {
+          "matched_name": "Vardø",
+          "indigenous_parallel": "Synth-0167",
+          "parallel_language": "Nordsamisk",
+          "gazetteer_place_id": "263614",
+          "nearest_indigenous_name": "Synth-0164",
+          "nearest_distance_m": 313,
+          "n_names": 71,
+          "n_indigenous": 5
+        },
+        "message": "1 place(s) named in the locality text have Indigenous-language names in Kartverket SSR.",
+        "retrieved": "2026-10-14",
+        "review_status": "not reviewed by Sámi representatives"
+      }
+    }
+  ],
+  "message": null
+}
