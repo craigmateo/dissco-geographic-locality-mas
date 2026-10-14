@@ -11,13 +11,14 @@ import uuid
 
 from src.geographic_locality_mas.extraction import extract_localities
 from src.geographic_locality_mas.geo_api_esri import check_coord_esri
+from src.geographic_locality_mas.geo_api_wikidata import check_coord_wikidata
 from src.geographic_locality_mas.parser_geo_text import parser_geo_text
 
 API_URL = "https://sandbox.dissco.tech/api/digital-specimen/v1/search"
+GAZETTERS=["ESRI"]#["ESRI",  'WIKIDATA']
 
 
-
-def browse_spec(p_data):
+def browse_spec(p_data, gazetters):
     #print(json.dumps(p_data, indent=4))
    
     returned=[]
@@ -39,10 +40,13 @@ def browse_spec(p_data):
                         loc_list=parser_geo_text(place)
                         print(loc_list)
                         for loc in loc_list:
-                            returned_esri=check_coord_esri(loc)
-                            vuuid=uuid.uuid4()
-                            georef_api_annotation.append({"uuid":str(vuuid), "gazetteer": "ESRI", "original_place": place, "searched_term": loc, "results": returned_esri})
-                            #geo_ref_source.append({"specimen_id":specimen_id, "searched_term": loc, "results": returned})
+                            if "ESRI" in gazetters:
+                                returned_esri=check_coord_esri(loc)
+                                vuuid=uuid.uuid4()                                
+                                georef_api_annotation.append({"uuid":str(vuuid), "id":None, "gazetteer": "ESRI", "original_place": place, "searched_term": loc, "results": returned_esri})
+                            if "WIKIDATA" in gazetters:
+                                #NOT_FUNCTIONAL_HARD_TO_PARSE OAUTH_TOKEN + SLOW SPARQL SEARCH + TOO MANY RESULTS API
+                                returned_wikidata=check_coord_wikidata(loc)
                         returned_full.append({"specimen_id":specimen_id, "georef_api_annotation":georef_api_annotation })
             
         spec2=spec.copy()    
@@ -54,6 +58,7 @@ def browse_spec(p_data):
 
         
 def main():
+    global GAZETTERS
     params = urlencode({"pageSize": 5, "pageNumber": 1})
     url = f"{API_URL}?{params}"
 
@@ -67,7 +72,7 @@ def main():
         sys.exit(1)
 
     records = payload.get("data", [])
-    records_georef=browse_spec(records)
+    records_georef=browse_spec(records, GAZETTERS)
     
     print(records_georef)
     #sys.exit()

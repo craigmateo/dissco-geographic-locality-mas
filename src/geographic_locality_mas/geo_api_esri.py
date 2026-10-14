@@ -29,11 +29,15 @@ def check_coord_esri(p_loc, max_location=5):
                             reply={}
                             reply["addr_type"]=str(data["Addr_type"]);
                             reply["type"]=str(data["Type"]);
-                            reply["long_label"]=str(data["LongLabel"]);
+                            reply["label"]=str(data["LongLabel"]);
+                            reply["description"]=None;
                             reply["country_name"]=str(data["CntryName"]);
                             reply["country_code"]=str(data["Country"]);
+                            """
                             reply["longitude"]=str(data["X"]);
                             reply["latitude"]=str(data["Y"]);
+                            """
+                            reply["coordinates"]={"long":data["X"], "lat":data["Y"] }
                             returned_datas.append(reply)
                         #print(reply)
                     i=i+1
