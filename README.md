@@ -97,7 +97,7 @@ Examples include:
 
 ## Getting started
 
-Requirements: Python 3.10 or newer, Git, and Make.
+Requirements: Python 3.10 or newer and Git. GNU Make is optional and used for the convenience commands below.
 
 Clone the repository:
 
@@ -128,6 +128,42 @@ The initial demonstration extracts geographic locality information from a sample
 
 Live gazetteer resolution and DiSSCo MAS deployment are planned development tasks, not yet implemented.
 
+### Windows 11 (PowerShell)
+
+Windows users can run the project directly in PowerShell without installing GNU Make or Windows Subsystem for Linux (WSL2).
+
+After cloning the repository, open PowerShell in the project directory.
+
+**Set up the development environment:**
+
+```powershell
+py -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -e ".[dev]"
+```
+
+**Run the tests:**
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q
+```
+
+**Run the demonstration:**
+
+```powershell
+.\.venv\Scripts\python.exe -m geographic_locality_mas.cli
+```
+
+**Fetch sample specimens from the DiSSCo Sandbox:**
+
+```powershell
+.\.venv\Scripts\python.exe scripts/fetch_specimens.py
+```
+
+These commands are equivalent to the `make setup`, `make test`, `make demo`, and `make fetch` targets.
+
+Using the virtual environment's Python executable directly avoids PowerShell execution-policy issues associated with activating virtual environments.
+
+Alternatively, developers who already use WSL2 can follow the Linux instructions above.
 
 ### Exploring live DiSSCo data
 
