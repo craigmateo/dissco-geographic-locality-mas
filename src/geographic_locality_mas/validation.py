@@ -4,7 +4,8 @@ import json
 import math
 from functools import lru_cache
 from pathlib import Path
-
+from pyproj import CRS, Transformer
+from shapely.ops import transform
 from shapely.geometry import Point, shape
 
 COUNTRIES_FILE = (
@@ -80,5 +81,156 @@ def validate_coordinates(specimen: dict) -> dict:
     else:
         result["status"] = "inconsistent"
         result["reason"] = "Coordinates fall outside recorded country"
+
+    return result
+def suggest_longitude_sign_correction(specimen: dict) -> dict | None:
+    """Suggest a longitude sign flip for a geographic mismatch.
+
+    Returns a possible correction without modifying the specimen.
+    A country match alone does not prove the correction is accurate.
+    """
+    original = validate_coordinates(specimen)
+
+    if original["status"] != "inconsistent":
+        return None
+
+    longitude = specimen["longitude"]
+
+    if longitude == 0:
+        return None
+
+    candidate = {
+        **specimen,
+        "longitude": -longitude,
+    }
+
+    corrected = validate_coordinates(candidate)
+
+    if corrected["status"] != "consistent":
+        return None
+
+    return {
+        "type": "possible_longitude_sign_error",
+        "original_longitude": longitude,
+        "suggested_longitude": -longitude,
+        "corrected_status": corrected["status"],
+        "requires_review": True,
+    }
+
+def suggest_coordinate_sign_corrections(specimen: dict) -> list[dict]:
+    """Suggest plausible coordinate sign corrections without modifying the specimen."""
+    original = validate_coordinates(specimen)
+
+    if original["status"] != "inconsistent":
+        return []
+
+    latitude = specimen["latitude"]
+    longitude = specimen["longitude"]
+
+    candidates = [
+        ("latitude_sign", -latitude, longitude),
+        ("longitude_sign", latitude, -longitude),
+        ("both_signs", -latitude, -longitude),
+    ]
+
+    suggestions = []
+    seen = set()
+
+    for correction_type, candidate_lat, candidate_lon in candidates:
+        coordinates = (candidate_lat, candidate_lon)
+
+        if coordinates == (latitude, longitude) or coordinates in seen:
+            continue
+
+        seen.add(coordinates)
+
+        candidate = {
+            **specimen,
+            "latitude": candidate_lat,
+            "longitude": candidate_lon,
+        }
+
+        result = validate_coordinates(candidate)
+
+        if result["status"] == "consistent":
+            suggestions.append({
+                "type": f"possible_{correction_type}_error",
+                "original_latitude": latitude,
+                "original_longitude": longitude,
+                "suggested_latitude": candidate_lat,
+                "suggested_longitude": candidate_lon,
+                "requires_review": True,
+            })
+
+    return suggestions
+
+def distance_to_country_km(
+    latitude: float,
+    longitude: float,
+    polygon,
+) -> float:
+    """Calculate approximate ground distance to a country polygon."""
+
+    local_crs = CRS.from_proj4(
+        f"+proj=aeqd +lat_0={latitude} +lon_0={longitude} "
+        "+datum=WGS84 +units=m +no_defs"
+    )
+
+    transformer = Transformer.from_crs(
+        "EPSG:4326",
+        local_crs,
+        always_xy=True,
+    )
+
+    projected_polygon = transform(transformer.transform, polygon)
+    projected_point = transform(
+        transformer.transform,
+        Point(longitude, latitude),
+    )
+
+    return projected_point.distance(projected_polygon) / 1000
+
+
+def validate_coordinates_with_tolerance(
+    specimen: dict,
+    tolerance_km: float = 5.0,
+) -> dict:
+    """Validate coordinates with a configurable country-boundary tolerance."""
+
+    if not math.isfinite(tolerance_km) or tolerance_km < 0:
+        raise ValueError("tolerance_km must be a finite non-negative number")
+
+    result = validate_coordinates(specimen)
+
+    result["boundary_distance_km"] = None
+    result["tolerance_km"] = tolerance_km
+
+    if result["status"] == "consistent":
+        result["boundary_distance_km"] = 0.0
+        return result
+
+    if result["status"] != "inconsistent":
+        return result
+
+    latitude = specimen["latitude"]
+    longitude = specimen["longitude"]
+    country = specimen["country"]
+
+    polygon = load_countries()[country.strip().casefold()]
+
+    distance = distance_to_country_km(
+        latitude,
+        longitude,
+        polygon,
+    )
+
+    result["boundary_distance_km"] = round(distance, 3)
+
+    if distance <= tolerance_km:
+        result["status"] = "near_boundary"
+        result["reason"] = (
+            "Coordinates fall just outside the recorded country's "
+            "reference boundary"
+        )
 
     return result
