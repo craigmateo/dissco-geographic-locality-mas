@@ -7,6 +7,7 @@ from pathlib import Path
 from pyproj import CRS, Transformer
 from shapely.ops import transform
 from shapely.geometry import Point, shape
+from geographic_locality_mas.country_names import normalize_country
 
 COUNTRIES_FILE = (
     Path(__file__).resolve().parents[2]
@@ -67,7 +68,7 @@ def validate_coordinates(specimen: dict) -> dict:
         return result
 
     countries = load_countries()
-    boundary = countries.get(country.strip().casefold())
+    boundary = countries.get(normalize_country(country).casefold())
 
     if boundary is None:
         result["reason"] = "Country not found in reference dataset"
@@ -216,7 +217,7 @@ def validate_coordinates_with_tolerance(
     longitude = specimen["longitude"]
     country = specimen["country"]
 
-    polygon = load_countries()[country.strip().casefold()]
+    polygon = load_countries()[normalize_country(country).casefold()]
 
     distance = distance_to_country_km(
         latitude,
