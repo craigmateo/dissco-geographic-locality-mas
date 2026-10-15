@@ -3,8 +3,8 @@
   python scripts/make_contract_examples.py
 
 Runs the value service in-process on one benchmark specimen (Vardø, SSR
-263614: a Northern Sámi and a Kven name), with the gazetteer responses from
-tests/fixtures (no network), and writes:
+263614), with the name-register responses from tests/fixtures (no network,
+every Sámi and Kven name made up), and writes:
   docs/examples/enrich-request.json    what the MAS sends (POST /v1/enrich)
   docs/examples/enrich-response.json   what the value service returns
   docs/examples/annotations.json       what the MAS publishes (annotations.py)
@@ -37,6 +37,7 @@ def specimen_from_benchmark(specimen_id):
         "ods:fdoType": "https://doi.org/21.T11148/894b1e6cad57e921764e",
         "ods:specimenName": rec["specimen_name"],
         "ods:organisationName": rec["organisation"],
+        "ods:organisationID": "https://ror.org/01xtthb56",
         "ods:hasEvents": [{
             "@type": "ods:Event",
             "ods:hasLocation": {
@@ -69,10 +70,11 @@ def main():
     ina.throttle = lambda host, rate: None
     OUT.mkdir(parents=True, exist_ok=True)
     specimen = specimen_from_benchmark(SPECIMEN_ID)
-    request = {"specimen": specimen, "enrichments": ["indigenous_names"]}
+    request = {"specimen": specimen, "enrichments": ["community_context"]}
     response = TestClient(app).post("/v1/enrich", json=request).json()
     agent = an.mas_agent("SANDBOX/MAS-ID", "Geographic Locality MAS")
-    annotations = an.to_annotations(specimen, response, agent)
+    response["created"] = "2026-10-15T09:00:00.000Z"          # stable examples
+    annotations = an.to_annotations(specimen, response, agent, response["created"])
     write("enrich-request.json", request)
     write("enrich-response.json", response)
     write("annotations.json", {"jobId": "https://hdl.handle.net/SANDBOX/JOB-ID",

@@ -1,4 +1,4 @@
-"""Value service: the team's enrichment logic behind HTTP (FastAPI).
+"""Value service: the community context behind HTTP (FastAPI).
 
   pip install -e ".[service]"
   uvicorn geographic_locality_mas.service:app --port 8000
@@ -8,12 +8,16 @@
 
 The DiSSCo MAS (RabbitMQ side) sends the Digital Specimen it receives
 (message["object"]) and maps the response to openDS annotations
-(annotations.py). Contract: docs/value-service-contract.md.
-Every response carries review_status ("not reviewed by Sámi representatives"),
-at the top and in each indigenous_names result.
+(annotations.py). Concept: docs/indigenous-community-context.md; contract:
+docs/value-service-contract.md. For each location: may a Sámi community be
+connected to this locality, and whom should the holding institution contact
+(community_context.assess_location). No Sámi or Kven name is in any response:
+the name registers are only evidence, and the names guard refuses a response
+that would hold one (HTTP 500).
+Every response carries review_status ("not reviewed by Sámi representatives").
 
 Environment (secrets come from the environment only, never from files):
-  MML_API_KEY            NLS Finland API key, needed for Finnish locations
+  MML_API_KEY            NLS Finland API key: register evidence for Finnish locations
   VALUE_SERVICE_API_KEY  if set, POST /v1/enrich needs 'Authorization: Bearer <key>'.
                          Set it when the service is public: it spends our NLS
                          key, and NLS asks users to keep keys protected.
@@ -28,25 +32,30 @@ from fastapi import Depends, FastAPI, Header, HTTPException
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from .annotations import location_path
-from .indigenous_names import GAZETTEERS, REVIEW_STATUS, find_indigenous_names, num1
+from .community_context import REVIEW_STATUS, assess_location
+from .indigenous_names import GAZETTEERS, num1
 
 SERVICE = "geographic-locality-value-service"
-VERSION = "0.2.0"
-STATUS = Literal["match", "nearby", "no_match", "no_coordinates", "not_covered", "error"]
+VERSION = "0.3.0"
+CONTEXT = Literal["indigenous_context", "no_known_context", "not_assessed", "not_covered",
+                  "error"]
 
 
 # ---- Request ---------------------------------------------------------------------
 
 class Location(BaseModel):
-    """One specimen location (one event). The same keys as the benchmark files."""
+    """One specimen location (one event): the keys of locations_from_specimen()."""
     model_config = ConfigDict(extra="ignore")
     specimen_id: str | None = None
     event_index: int = 0
+    organisation: str | None = None
+    organisation_id: str | None = None
     country: str | None = None
     country_code: str | None = None
     state_province: str | None = None
     county: str | None = None
     municipality: str | None = None
+    higher_geography: str | None = None
     locality: str | None = None
     verbatim_locality: str | None = None
     latitude: float | None = None
@@ -60,7 +69,7 @@ class EnrichRequest(BaseModel):
         None, description="Digital Specimen: the bare openDS object (RabbitMQ "
                           "message['object']) or the API wrapper {'id', 'attributes'}")
     locations: list[Location] | None = None
-    enrichments: list[Literal["indigenous_names"]] = ["indigenous_names"]
+    enrichments: list[Literal["community_context"]] = ["community_context"]
 
     @model_validator(mode="after")
     def one_input(self):
@@ -71,74 +80,49 @@ class EnrichRequest(BaseModel):
 
 # ---- Response --------------------------------------------------------------------
 
-class MatchedOn(BaseModel):
-    field: Literal["locality", "coordinates"]
-    text: str | None
-    gazetteer_name: str | None
-    gazetteer_language: str | None
+class Institution(BaseModel):
+    name: str | None
+    url: str | None
+    role: str
+    status: str
 
 
-class IndigenousName(BaseModel):
-    name: str
-    language: str | None = Field(description="ISO 639-3, e.g. sme, smn, sms; fkv = Kven")
-    language_name: str | None
-    language_category: Literal["indigenous", "national_minority", "other"]
-    gazetteer_language: str | None = Field(description="Language value as in the gazetteer")
-    name_status: str | None
-    spelling_status: str | None
-    gazetteer: str
-    place_id: str | None
-    place_uri: str | None
-    name_id: str | None
-    feature_type: str | None
-    match_type: Literal["name", "proximity"]
-    matched_on: MatchedOn
-    distance_m: int | None
-    score: float = Field(ge=0, le=1)
-    attribution: str
-    licence: str
-    caveats: list[str]
+class Contact(BaseModel):
+    level: Literal["national", "local"]
+    contact: str
+    role: str | None
+    url: str | None
+    status: str = Field(description="How sure: the registry is a placeholder until the "
+                                    "Sámi side decides who speaks for whom")
 
 
-class Query(BaseModel):
-    url: str = Field(description="First gazetteer request, without the API key")
-    latitude: float
-    longitude: float
-    radius_m: int
-    coordinate_uncertainty_m: float | None
-
-
-class Summary(BaseModel):
-    matched_name: str | None
-    indigenous_parallel: str | None
-    parallel_language: str | None
-    gazetteer_place_id: str | None
-    nearest_indigenous_name: str | None
-    nearest_distance_m: int | None
-    n_names: int | None
-    n_indigenous: int | None
-
-
-class IndigenousNames(BaseModel):
+class CommunityContext(BaseModel):
+    """community_context.assess_location() for one location. Never holds a name."""
+    model_config = ConfigDict(extra="allow")
     specimen_id: str | None
     event_index: int | None
-    status: STATUS
-    gazetteer: str | None
-    query: Query | None
-    matches: list[IndigenousName]
-    minority_language_names: list[IndigenousName]
-    nearby: list[IndigenousName]
-    summary: Summary | None
+    status: CONTEXT
+    country: str | None
+    people: str | None
+    qc: dict[str, Any] = Field(description="Coordinate check status and whether the "
+                                           "coordinates were used")
+    areas: list[dict[str, Any]] = Field(description="Every legally defined area the "
+                                                    "recorded admin units lie in")
+    evidence: dict[str, Any] | None = Field(description="Name-register evidence: counts "
+                                                        "and ISO 639-3 codes only")
+    institution: Institution | None = Field(description="Who should make contact")
+    contacts: list[Contact] = Field(description="Whom to contact, in order")
+    notice: str | None
     message: str | None
-    retrieved: str
-    review_status: str = Field(REVIEW_STATUS, description="Who has reviewed these names")
+    comment: list[str] = Field(description="oa:value lines of the annotation")
+    review_status: str = Field(REVIEW_STATUS, description="Who has reviewed this")
 
 
 class LocationResult(BaseModel):
     event_index: int
     target: str = Field(description="JSON path of the location in the specimen")
     location: Location
-    indigenous_names: IndigenousNames | None = None
+    community_context: CommunityContext | None = None
 
 
 class EnrichResponse(BaseModel):
@@ -146,7 +130,7 @@ class EnrichResponse(BaseModel):
     version: str
     specimen_id: str | None
     created: str
-    review_status: str = Field(REVIEW_STATUS, description="Who has reviewed these names")
+    review_status: str = Field(REVIEW_STATUS, description="Who has reviewed this")
     results: list[LocationResult]
     message: str | None = None
 
@@ -171,11 +155,14 @@ def locations_from_specimen(specimen):
         out.append({
             "specimen_id": specimen_id,
             "event_index": i,
+            "organisation": attrs.get("ods:organisationName"),
+            "organisation_id": attrs.get("ods:organisationID"),
             "country": loc.get("dwc:country"),
             "country_code": loc.get("dwc:countryCode"),
             "state_province": loc.get("dwc:stateProvince"),
             "county": loc.get("dwc:county"),
             "municipality": loc.get("dwc:municipality"),
+            "higher_geography": loc.get("dwc:higherGeography"),
             "locality": loc.get("dwc:locality"),
             "verbatim_locality": loc.get("dwc:verbatimLocality"),
             "latitude": num1(geo.get("dwc:decimalLatitude")),
@@ -188,8 +175,8 @@ def locations_from_specimen(specimen):
 # ---- App ---------------------------------------------------------------------------
 
 app = FastAPI(title="Geographic Locality value service", version=VERSION,
-              description="Enrichment API for the DiSSCo Geographic Locality MAS "
-                          "(Indigenous place names: Kartverket SSR, NLS Finland).")
+              description="Enrichment API for the DiSSCo Geographic Locality MAS: "
+                          "community context (Sámi) for each specimen location.")
 
 
 def check_api_key(authorization: str | None = Header(None)):
@@ -220,9 +207,11 @@ def enrich(request: EnrichRequest):
     for loc in locations:
         result = {"event_index": loc["event_index"],
                   "target": location_path(loc["event_index"]), "location": loc}
-        if "indigenous_names" in request.enrichments:
-            result["indigenous_names"] = {**find_indigenous_names(loc),
-                                          "review_status": REVIEW_STATUS}
+        if "community_context" in request.enrichments:
+            try:
+                result["community_context"] = assess_location(loc)
+            except ValueError as e:             # names guard: nothing is returned
+                raise HTTPException(status_code=500, detail=str(e)) from None
         results.append(result)
     created = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
     return {"service": SERVICE, "version": VERSION, "specimen_id": specimen_id,

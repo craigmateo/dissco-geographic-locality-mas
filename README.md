@@ -153,15 +153,18 @@ The repository also contains `data/benchmark-10.json`, a small collection of rea
 
 **Current limitations:** The live-data client retrieves the first five records. Filtering, pagination, gazetteer matching, and MAS integration are future development tasks.
 
-## Indigenous place names
+## Indigenous community context (Sámi)
 
-`find_indigenous_names(location)` in `src/geographic_locality_mas/indigenous_names.py` links a specimen location to the Indigenous-language names of the places its locality text names, from official state gazetteers: Kartverket SSR (Norway, no key) and NLS Finland Geographic Names (`MML_API_KEY`). Example: `Kilpisjärvi` → its Northern Sámi name (NLS place 10785565).
+For each specimen location: may a Sámi community be connected to this locality? If so, the MAS comments that the community needs to be contacted for collaboration and approval before Sámi knowledge is added to the record, and that the holding institution should make the contact (Sámi Parliament, then the local community). Concept: [docs/indigenous-community-context.md](docs/indigenous-community-context.md).
 
-- Value service: `.venv/bin/pip install -e ".[service]"`, then `.venv/bin/uvicorn geographic_locality_mas.service:app --reload` and `POST /v1/enrich` (docs at `/docs`). Contract and annotation mapping: [docs/value-service-contract.md](docs/value-service-contract.md), `src/geographic_locality_mas/annotations.py`.
+- `assess_location(location, qc_status=None)` in `src/geographic_locality_mas/community_context.py`: one call per location. Evidence: legally defined Sámi areas (`data/indigenous-areas.csv`, matched on admin fields) and the official name registers (`find_indigenous_names()` in `indigenous_names.py`: Kartverket SSR, NLS Finland with `MML_API_KEY`; counts and language codes only). Contacts: `data/community-contacts.csv`, a placeholder until the Sámi side decides who speaks for whom.
+- Value service: `.venv/bin/pip install -e ".[service]"`, then `.venv/bin/uvicorn geographic_locality_mas.service:app --reload` and `POST /v1/enrich` (docs at `/docs`). Contract: [docs/value-service-contract.md](docs/value-service-contract.md); annotation mapping: `src/geographic_locality_mas/annotations.py`.
 - Keys come from environment variables only. Set `VALUE_SERVICE_API_KEY` when the service is public.
 - Tests: `make test`. Gazetteer HTTP is mocked from `tests/fixtures/`: real responses with every Sámi and Kven name replaced by a made-up name. `python scripts/make_gazetteer_fixtures.py --record` records again (network and `MML_API_KEY`); the real recordings stay in the git-ignored `output/fixtures-recorded/`.
-- Benchmark: `data/benchmark-indigenous.json`, 25 Sápmi specimens (match, nearby, no match), with gazetteer IDs, languages and name status but no names.
-- Official gazetteer names are not community-sourced, but Sámi place names are still Sámi knowledge. No Sámi or Kven names are stored in this repo, and every response and annotation says `not reviewed by Sámi representatives`. Kven names are kept apart from Sámi names.
+- Benchmark: `data/benchmark-indigenous.json`, 25 Sápmi specimens with gazetteer IDs, languages and name status but no names.
+- Built without Sámi input: every response and annotation says `not reviewed by Sámi representatives`. Sámi place names are Sámi knowledge, even in state registers: no Sámi or Kven names are stored in this repo or appear in any output. Kven names are kept apart from Sámi names.
+
+*Side note: the community-context code and concept were written with help from Claude (Anthropic).*
 
 ## Repository structure
 

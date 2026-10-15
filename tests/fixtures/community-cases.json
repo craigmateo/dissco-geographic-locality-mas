@@ -1,0 +1,316 @@
+[
+ {
+  "id": "no-match-county",
+  "qc_status": "near_boundary",
+  "location": {
+   "specimen_id": "SYN/NO-1",
+   "event_index": 0,
+   "country": "Norway",
+   "county": "Finnmark",
+   "municipality": "Vardø",
+   "locality": "Synth town",
+   "latitude": 70.37,
+   "longitude": 31.12,
+   "coordinate_uncertainty_m": 707,
+   "organisation": "Synthetic Herbarium",
+   "organisation_id": "https://ror.org/000000000"
+  },
+  "names_result": {
+   "specimen_id": null,
+   "event_index": 0,
+   "status": "match",
+   "gazetteer": "Kartverket SSR",
+   "query": {
+    "url": "synthetic",
+    "latitude": 0,
+    "longitude": 0,
+    "radius_m": 2000,
+    "coordinate_uncertainty_m": null
+   },
+   "matches": [
+    {
+     "name": "Synth-0001",
+     "language": "sme",
+     "place_id": "900001"
+    }
+   ],
+   "minority_language_names": [
+    {
+     "name": "Synth-0002",
+     "language": "fkv",
+     "place_id": "900001"
+    }
+   ],
+   "nearby": [],
+   "summary": {
+    "n_indigenous": 4
+   },
+   "message": "synthetic",
+   "retrieved": "2026-10-15"
+  }
+ },
+ {
+  "id": "no-nearby-municipality-and-merged-county",
+  "qc_status": "consistent",
+  "location": {
+   "specimen_id": "SYN/NO-2",
+   "country": "Norway",
+   "county": "Troms og Finnmark",
+   "municipality": "Kautokeino",
+   "latitude": 69.0,
+   "longitude": 23.0,
+   "organisation": "Synthetic Herbarium",
+   "organisation_id": "https://ror.org/000000000"
+  },
+  "names_result": {
+   "specimen_id": null,
+   "event_index": 0,
+   "status": "nearby",
+   "gazetteer": "Kartverket SSR",
+   "query": {
+    "url": "synthetic",
+    "latitude": 0,
+    "longitude": 0,
+    "radius_m": 5000,
+    "coordinate_uncertainty_m": null
+   },
+   "matches": [],
+   "minority_language_names": [],
+   "nearby": [
+    {
+     "name": "Synth-0003",
+     "language": "sme",
+     "place_id": "900002"
+    },
+    {
+     "name": "Synth-0004",
+     "language": "smj",
+     "place_id": "900002"
+    }
+   ],
+   "summary": {
+    "n_indigenous": 7
+   },
+   "message": "synthetic",
+   "retrieved": "2026-10-15"
+  }
+ },
+ {
+  "id": "fi-homeland-no-key",
+  "qc_status": "consistent",
+  "location": {
+   "specimen_id": "SYN/FI-1",
+   "country": "Finland",
+   "county": "Inari",
+   "latitude": 68.9,
+   "longitude": 27.0,
+   "coordinate_uncertainty_m": 10000,
+   "organisation": "Synthetic Museum"
+  },
+  "names_result": {
+   "specimen_id": null,
+   "event_index": 0,
+   "status": "error",
+   "gazetteer": "NLS Finland Geographic Names",
+   "query": {
+    "url": "synthetic",
+    "latitude": 0,
+    "longitude": 0,
+    "radius_m": 2000,
+    "coordinate_uncertainty_m": null
+   },
+   "matches": [],
+   "minority_language_names": [],
+   "nearby": [],
+   "summary": null,
+   "message": "synthetic",
+   "retrieved": "2026-10-15"
+  }
+ },
+ {
+  "id": "fi-sodankyla-partial",
+  "qc_status": null,
+  "location": {
+   "specimen_id": "SYN/FI-2",
+   "country": "FI",
+   "county": "Sodankylä",
+   "latitude": 67.9,
+   "longitude": 26.6
+  },
+  "names_result": null
+ },
+ {
+  "id": "fi-outside-no-names",
+  "qc_status": "consistent",
+  "location": {
+   "specimen_id": "SYN/FI-3",
+   "country": "Finland",
+   "county": "Rovaniemi",
+   "latitude": 66.5,
+   "longitude": 25.7
+  },
+  "names_result": {
+   "specimen_id": null,
+   "event_index": 0,
+   "status": "no_match",
+   "gazetteer": "NLS Finland Geographic Names",
+   "query": {
+    "url": "synthetic",
+    "latitude": 0,
+    "longitude": 0,
+    "radius_m": 2000,
+    "coordinate_uncertainty_m": null
+   },
+   "matches": [],
+   "minority_language_names": [],
+   "nearby": [],
+   "summary": {
+    "n_indigenous": 0
+   },
+   "message": "synthetic",
+   "retrieved": "2026-10-15"
+  }
+ },
+ {
+  "id": "no-qc-inconsistent-county",
+  "qc_status": "inconsistent",
+  "location": {
+   "specimen_id": "SYN/NO-3",
+   "country": "Norway",
+   "stateProvince": "Nordland",
+   "latitude": 67.0,
+   "longitude": -14.0
+  },
+  "names_result": {
+   "specimen_id": null,
+   "event_index": 0,
+   "status": "match",
+   "gazetteer": "Kartverket SSR",
+   "query": {
+    "url": "synthetic",
+    "latitude": 0,
+    "longitude": 0,
+    "radius_m": 2000,
+    "coordinate_uncertainty_m": null
+   },
+   "matches": [
+    {
+     "name": "Synth-0005",
+     "language": "sme",
+     "place_id": "900001"
+    }
+   ],
+   "minority_language_names": [],
+   "nearby": [],
+   "summary": {
+    "n_indigenous": 2
+   },
+   "message": "synthetic",
+   "retrieved": "2026-10-15"
+  }
+ },
+ {
+  "id": "no-qc-inconsistent-nothing",
+  "qc_status": "inconsistent",
+  "location": {
+   "specimen_id": "SYN/NO-4",
+   "country": "Norway",
+   "locality": "Synth bay",
+   "latitude": 67.0,
+   "longitude": -14.0
+  },
+  "names_result": null
+ },
+ {
+  "id": "sweden-not-covered",
+  "qc_status": "consistent",
+  "location": {
+   "specimen_id": "SYN/SE-1",
+   "country": "Sweden",
+   "county": "Norrbotten",
+   "latitude": 67.8,
+   "longitude": 20.2
+  },
+  "names_result": null
+ },
+ {
+  "id": "no-lookup-error-tromso",
+  "qc_status": "consistent",
+  "location": {
+   "specimen_id": "SYN/NO-5",
+   "country": "Norway",
+   "municipality": "Tromsø",
+   "latitude": 69.65,
+   "longitude": 18.96
+  },
+  "names_result": {
+   "specimen_id": null,
+   "event_index": 0,
+   "status": "error",
+   "gazetteer": "Kartverket SSR",
+   "query": {
+    "url": "synthetic",
+    "latitude": 0,
+    "longitude": 0,
+    "radius_m": 2000,
+    "coordinate_uncertainty_m": null
+   },
+   "matches": [],
+   "minority_language_names": [],
+   "nearby": [],
+   "summary": null,
+   "message": "synthetic",
+   "retrieved": "2026-10-15"
+  }
+ },
+ {
+  "id": "no-no-coordinates-karasjok",
+  "qc_status": "unable_to_validate",
+  "location": {
+   "specimen_id": "SYN/NO-6",
+   "country": "Norway",
+   "municipality": "Karasjok",
+   "locality": "Synth river"
+  },
+  "names_result": null
+ },
+ {
+  "id": "no-code-trondelag-german",
+  "qc_status": "unable_to_validate",
+  "location": {
+   "specimen_id": "SYN/NO-7",
+   "country_code": "NO",
+   "country": "Norwegen",
+   "stateProvince": "Tröndelag",
+   "latitude": 63.4,
+   "longitude": 10.4
+  },
+  "names_result": {
+   "specimen_id": null,
+   "event_index": 0,
+   "status": "nearby",
+   "gazetteer": "Kartverket SSR",
+   "query": {
+    "url": "synthetic",
+    "latitude": 0,
+    "longitude": 0,
+    "radius_m": 2000,
+    "coordinate_uncertainty_m": null
+   },
+   "matches": [],
+   "minority_language_names": [],
+   "nearby": [
+    {
+     "name": "Synth-0006",
+     "language": "sma",
+     "place_id": "900002"
+    }
+   ],
+   "summary": {
+    "n_indigenous": 1
+   },
+   "message": "synthetic",
+   "retrieved": "2026-10-15"
+  }
+ }
+]

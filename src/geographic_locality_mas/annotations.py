@@ -1,41 +1,37 @@
 """Map value-service results to openDS annotations (DiSSCo MAS side).
 
-Reference implementation of the team's annotation design, with tests
+Reference implementation of the community-context annotation, with tests
 (tests/test_annotations.py). The MAS in DiSSCo/demo-enrichment-service-image
-can copy these functions: the dicts follow shared.py field by field
-(map_to_entity_relationship, map_to_annotation_str_val, build_class_selector).
+builds the same annotation with shared.py (map_to_annotation_str_val,
+build_class_selector, get_agent). Concept: docs/indigenous-community-context.md.
 
-  match     -> ods:adding of one ods:EntityRelationship per gazetteer place on
-               $['ods:hasEntityRelationships'] (as the GBIF and ENA linkers),
-               ods:score = the best name score of that place
-  nearby, no_match, no_coordinates, not_covered
-            -> oa:commenting on $['ods:hasEvents'][i]['ods:hasLocation']
+  community context of a location
+      -> one oa:commenting on $['ods:hasEvents'][i]['ods:hasLocation'];
+         oa:value = the comment lines (one string per line): may a Sámi community
+         be connected to this locality, whom the holding institution should contact
+         for collaboration and approval; ends with "Built without Sámi input." and
+         the review status. Never a name.
+  status error (name register lookup failed and no listed area matched)
+      -> CommunityContextError: the MAS sends a failure message (job FAILED,
+         can be re-run)
   no location in the specimen
-            -> oa:commenting on $['ods:hasEvents']
-  error     -> IndigenousNamesError: the MAS sends a failure message (job FAILED)
+      -> one oa:commenting on $['ods:hasEvents']
 
-Kven names (minority_language_names) are never annotated as Indigenous names.
-Places whose best score is below min_score are not added as relationships;
-they are described in the comment instead.
-Every annotation ends with the review status (REVIEW_NOTE).
+oa:commenting is never merged into the record and its creator can delete it.
 """
 
-import json
 import os
 from datetime import datetime, timezone
 
-from .indigenous_names import REVIEW_STATUS
+from .community_context import REVIEW_STATUS
 
 REVIEW_NOTE = f"Review status: {REVIEW_STATUS}."
-ER_PATH = "$['ods:hasEntityRelationships']"
+BUILT_WITHOUT = "Built without Sámi input."
 EVENTS_PATH = "$['ods:hasEvents']"
-RELATIONSHIP = "hasIndigenousPlaceName"
-MIN_SCORE = 0.5
-COMMENT_ON = ("nearby", "no_match", "no_coordinates", "not_covered")
 
 
-class IndigenousNamesError(RuntimeError):
-    """The value service could not look up a location (gazetteer down, no key)."""
+class CommunityContextError(RuntimeError):
+    """The community context could not be assessed (register lookup failed)."""
 
 
 def location_path(event_index):
@@ -78,12 +74,9 @@ def class_selector(path):
     return {"@type": "ods:ClassSelector", "ods:class": path}
 
 
-def annotation(agent, timestamp, motivation, value, selector, target, references, score=None):
-    """One annotation, the same fields as shared.map_to_annotation_str_val()."""
-    body = {"@type": "oa:TextualBody", "oa:value": [value],
-            "dcterms:references": references or ""}
-    if score is not None:
-        body["ods:score"] = score
+def annotation(agent, timestamp, motivation, values, selector, target, references):
+    """One annotation, the same fields as shared.map_to_annotation_str_val()
+    (oa:value holds one string per line)."""
     return {
         "@type": "ods:Annotation",
         "oa:motivation": motivation,
@@ -92,107 +85,28 @@ def annotation(agent, timestamp, motivation, value, selector, target, references
         "oa:hasTarget": {"dcterms:identifier": target["id"], "@id": target["id"],
                          "ods:fdoType": target["type"], "@type": target["type"],
                          "oa:hasSelector": selector},
-        "oa:hasBody": body,
+        "oa:hasBody": {"@type": "oa:TextualBody", "oa:value": list(values),
+                       "dcterms:references": references or ""},
     }
 
 
-def by_place(matches):
-    """Matches grouped per gazetteer place, nearest place first."""
-    groups = {}
-    for m in matches:
-        groups.setdefault((m["gazetteer"], m["place_id"]), []).append(m)
-    return list(groups.values())
+def annotations_for_result(result, target, agent, timestamp):
+    """The community comment for one location result of POST /v1/enrich."""
+    cc = result["community_context"]
+    if cc["status"] == "error":
+        raise CommunityContextError(cc["message"])
+    references = next((a["source_url"] for a in cc["areas"] if a.get("source_url")), "")
+    return [annotation(agent, timestamp, "oa:commenting", cc["comment"],
+                       class_selector(location_path(result["event_index"])), target,
+                       references)]
 
 
-def name_label(m):
-    status = f"; name status {m['name_status']}" if m.get("name_status") else ""
-    return f"{m['name']} ({m['language_name']}, {m['language']}{status})"
-
-
-def relationship_remarks(place):
-    """dwc:relationshipRemarks for one place: names, source, ID, match basis, caveats."""
-    first = place[0]
-    on = first["matched_on"]
-    caveats = list(dict.fromkeys(c for m in place for c in m["caveats"]))
-    parts = [
-        "Indigenous-language name(s) of this place: "
-        + "; ".join(name_label(m) for m in place) + ".",
-        f"Source: {first['gazetteer']}, place {first['place_id']}.",
-        (f"Matched on {on['field']} text '{on['text']}' "
-         f"(gazetteer name {on['gazetteer_name']}, {on['gazetteer_language']})."),
-        *caveats,
-        first["attribution"] + ".",
-        REVIEW_NOTE,
-    ]
-    return " ".join(parts)
-
-
-def entity_relationship(place, agent, timestamp):
-    """ods:EntityRelationship for one place, as shared.map_to_entity_relationship()
-    plus dwc:relationshipRemarks."""
-    first = place[0]
-    return {
-        "@type": "ods:EntityRelationship",
-        "dwc:relationshipOfResource": RELATIONSHIP,
-        "dwc:relatedResourceID": first["place_uri"] or f"{first['gazetteer']}:{first['place_id']}",
-        "ods:relatedResourceURI": first["place_uri"],
-        "dwc:relationshipEstablishedDate": timestamp,
-        "dwc:relationshipRemarks": relationship_remarks(place),
-        "ods:hasAgents": [agent],
-    }
-
-
-def comment_text(result, low=()):
-    """oa:value of the comment on one location."""
-    parts = [result["message"]]
-    if result["nearby"]:
-        parts.append("Nearest Indigenous-language names: " + "; ".join(
-            f"{name_label(m)}, {m['distance_m']} m, {m['place_uri'] or m['place_id']}"
-            for m in result["nearby"]) + ".")
-    for place in low:
-        parts.append(f"Low-confidence match (score {max(m['score'] for m in place)}, "
-                     "not added as a relationship): "
-                     + "; ".join(name_label(m) for m in place)
-                     + f", {place[0]['gazetteer']} place {place[0]['place_id']}.")
-    used = result["nearby"] + [m for place in low for m in place]
-    if used:
-        parts.append(used[0]["caveats"][0])
-        parts.append(used[0]["attribution"] + ".")
-    parts.append(REVIEW_NOTE)
-    return " ".join(parts)
-
-
-def annotations_for_result(result, target, agent, timestamp, min_score=MIN_SCORE,
-                           comment_on=COMMENT_ON):
-    """Annotations for one location result (one event) of POST /v1/enrich."""
-    ind = result["indigenous_names"]
-    if ind["status"] == "error":
-        raise IndigenousNamesError(ind["message"])
-    ref = (ind.get("query") or {}).get("url") or ""
-    out, low = [], []
-    for place in by_place(ind["matches"]):
-        score = max(m["score"] for m in place)
-        if score < min_score:
-            low.append(place)
-            continue
-        er = entity_relationship(place, agent, timestamp)
-        out.append(annotation(agent, timestamp, "ods:adding", json.dumps(er, ensure_ascii=False),
-                              class_selector(ER_PATH), target, ref, score))
-    if low or (not out and ind["status"] in comment_on):
-        scores = [m["score"] for m in ind["nearby"]] + [m["score"] for p in low for m in p]
-        out.append(annotation(agent, timestamp, "oa:commenting", comment_text(ind, low),
-                              class_selector(location_path(result["event_index"])), target,
-                              ref, max(scores) if scores else None))
-    return out
-
-
-def to_annotations(specimen, response, agent=None, timestamp=None, min_score=MIN_SCORE,
-                   comment_on=COMMENT_ON):
-    """All Indigenous place-name annotations for one specimen.
+def to_annotations(specimen, response, agent=None, timestamp=None):
+    """All community-context annotations for one specimen.
 
     specimen: the Digital Specimen from the RabbitMQ message (message["object"]).
     response: the JSON body of POST /v1/enrich for that specimen.
-    Raises IndigenousNamesError if a lookup failed: send a failure message.
+    Raises CommunityContextError if a lookup failed: send a failure message.
     """
     agent = agent or mas_agent()
     timestamp = timestamp or timestamp_now()
@@ -200,8 +114,7 @@ def to_annotations(specimen, response, agent=None, timestamp=None, min_score=MIN
     results = response.get("results") or []
     if not results:
         return [annotation(agent, timestamp, "oa:commenting",
-                           "No location in the specimen record: nothing to match against "
-                           "Indigenous place names. " + REVIEW_NOTE,
+                           ["No location in the specimen record: community context not "
+                            "assessed.", BUILT_WITHOUT, REVIEW_NOTE],
                            class_selector(EVENTS_PATH), target, "")]
-    return [a for r in results
-            for a in annotations_for_result(r, target, agent, timestamp, min_score, comment_on)]
+    return [a for r in results for a in annotations_for_result(r, target, agent, timestamp)]

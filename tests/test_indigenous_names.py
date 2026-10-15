@@ -342,3 +342,14 @@ def test_fixtures_hold_only_made_up_sami_and_kven_names(gaz):
 def test_benchmark_holds_no_names():
     name_fields = {"matched_name", "indigenous_parallel", "nearest_indigenous_name"}
     assert not any(name_fields & set(r) for r in BENCHMARK)
+
+
+def test_register_names_collects_every_sami_and_kven_name(gazetteers):
+    rec = next(r for r in BENCHMARK if r["specimen_id"].endswith("X16-9NF-V0S"))
+    register = set()
+    with_names = ina.find_indigenous_names(as_location(rec), today=TODAY, register_names=register)
+    assert with_names == ina.find_indigenous_names(as_location(rec), today=TODAY)   # unchanged
+    listed = {r["name"] for k in ("matches", "minority_language_names", "nearby")
+              for r in with_names[k]}
+    assert listed <= register
+    assert all(n.startswith("Synth-") for n in register)    # made-up Sámi/Kven names only

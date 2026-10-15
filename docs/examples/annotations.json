@@ -3,7 +3,7 @@
   "annotations": [
     {
       "@type": "ods:Annotation",
-      "oa:motivation": "ods:adding",
+      "oa:motivation": "oa:commenting",
       "dcterms:creator": {
         "@id": "https://hdl.handle.net/SANDBOX/MAS-ID",
         "@type": "schema:SoftwareApplication",
@@ -28,7 +28,7 @@
           }
         ]
       },
-      "dcterms:created": "2026-10-14T11:11:13.440Z",
+      "dcterms:created": "2026-10-15T09:00:00.000Z",
       "oa:hasTarget": {
         "dcterms:identifier": "https://doi.org/SANDBOX/X16-9NF-V0S",
         "@id": "https://doi.org/SANDBOX/X16-9NF-V0S",
@@ -36,16 +36,23 @@
         "@type": "https://doi.org/21.T11148/894b1e6cad57e921764e",
         "oa:hasSelector": {
           "@type": "ods:ClassSelector",
-          "ods:class": "$['ods:hasEntityRelationships']"
+          "ods:class": "$['ods:hasEvents'][0]['ods:hasLocation']"
         }
       },
       "oa:hasBody": {
         "@type": "oa:TextualBody",
         "oa:value": [
-          "{\"@type\": \"ods:EntityRelationship\", \"dwc:relationshipOfResource\": \"hasIndigenousPlaceName\", \"dwc:relatedResourceID\": \"https://stadnamn.kartverket.no/fakta/263614\", \"ods:relatedResourceURI\": \"https://stadnamn.kartverket.no/fakta/263614\", \"dwc:relationshipEstablishedDate\": \"2026-10-14T11:11:13.440Z\", \"dwc:relationshipRemarks\": \"Indigenous-language name(s) of this place: Synth-0167 (Northern Sámi, sme; name status hovednavn). Source: Kartverket SSR, place 263614. Matched on locality text 'Vardø' (gazetteer name Vardø, nor). Official name in a state gazetteer (Kartverket SSR), not community-sourced Indigenous knowledge. © Kartverket, Sentralt stedsnavnregister (SSR), CC BY 4.0. Review status: not reviewed by Sámi representatives.\", \"ods:hasAgents\": [{\"@id\": \"https://hdl.handle.net/SANDBOX/MAS-ID\", \"@type\": \"schema:SoftwareApplication\", \"schema:identifier\": \"https://hdl.handle.net/SANDBOX/MAS-ID\", \"schema:name\": \"Geographic Locality MAS\", \"ods:hasRoles\": [{\"@type\": \"schema:Role\", \"schema:roleName\": \"machine-annotation-service\"}], \"ods:hasIdentifiers\": [{\"@id\": \"https://hdl.handle.net/SANDBOX/MAS-ID\", \"@type\": \"ods:Identifier\", \"dcterms:type\": \"Handle\", \"dcterms:title\": \"Handle\", \"dcterms:identifier\": \"https://hdl.handle.net/SANDBOX/MAS-ID\", \"ods:isPartOfLabel\": false, \"ods:gupriLevel\": \"GloballyUniqueStablePersistentResolvableFDOCompliant\", \"ods:identifierStatus\": \"Preferred\"}]}]}"
+          "A Sámi community may be connected to this locality. Before Sámi knowledge is added to this record, the community needs to be contacted for collaboration and approval.",
+          "Official name register (Kartverket SSR): a place named in the locality text has Sámi-language names (sme; 5 within 2000 m). Names are not copied here.",
+          "Sámi communities may hold knowledge about this place and this organism (e.g. names, uses, stories) and have rights in how this record and data from it are used. Add such knowledge only with their free, prior and informed consent.",
+          "The holding institution, University of Oslo <https://ror.org/01xtthb56>, should contact, for collaboration and approval, in this order:",
+          "1. Sámi Parliament of Norway <https://sametinget.no/>: proposed first contact [proposed by the team, not confirmed by Sámi representatives].",
+          "2. Local Sámi community (to be designated by the Sámi side) [open: who speaks for whom is for the Sámi side to decide].",
+          "Local Contexts BC Notice (candidate): the holding institution can apply it through the Local Contexts Hub.",
+          "Built without Sámi input.",
+          "Review status: not reviewed by Sámi representatives."
         ],
-        "dcterms:references": "https://ws.geonorge.no/stedsnavn/v1/punkt?nord=70.3725&ost=31.1192&koordsys=4258&radius=2000&utkoordsys=4258&treffPerSide=500&side=1",
-        "ods:score": 0.9
+        "dcterms:references": ""
       }
     }
   ]

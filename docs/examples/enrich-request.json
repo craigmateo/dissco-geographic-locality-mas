@@ -6,6 +6,7 @@
     "ods:fdoType": "https://doi.org/21.T11148/894b1e6cad57e921764e",
     "ods:specimenName": "Saxifraga rivularis L.",
     "ods:organisationName": "University of Oslo",
+    "ods:organisationID": "https://ror.org/01xtthb56",
     "ods:hasEvents": [
       {
         "@type": "ods:Event",
@@ -25,6 +26,6 @@
     ]
   },
   "enrichments": [
-    "indigenous_names"
+    "community_context"
   ]
 }
