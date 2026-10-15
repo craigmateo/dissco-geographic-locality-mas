@@ -48,8 +48,10 @@ def extract_coordinates(specimen):
             lat = float(lat_deg) + float(lat_min)/60
             lon = float(lon_deg) + float(lon_min)/60
             latitude, longitude = parse_coordinates(lat, lat_hem, lon, lon_hem)
-        specimen["latitude"] = latitude
-        specimen["longitude"] = longitude 
+        if latitude is not None and specimen.get("latitude") is None:
+            specimen["latitude"] = latitude
+        if longitude is not None and specimen.get("longitude") is None:
+            specimen["longitude"] = longitude 
     return specimen
 
 def parse_coordinates(lat, lat_hem, lon, lon_hem):

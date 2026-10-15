@@ -4,6 +4,7 @@ import re
 def extract_distance(specimen):
     if specimen.get("locality"):
         text = specimen.get("locality")
+        distance_in_text = False
         if re.search(r'\b(km|kilometer|kilometers|mi|mile|miles|m|meter|meters)\b', text, re.IGNORECASE):
             distance_in_text = True
         coordinates_in_text = True if specimen.get("latitude") and specimen.get("longitude") else False
