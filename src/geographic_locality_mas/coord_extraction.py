@@ -2,8 +2,6 @@
 import re
 
 def extract_coordinates(specimen):
-    if specimen.get("latitude") and specimen.get("longitude"):
-        return specimen
     if specimen.get("locality"):
         text = specimen.get("locality")
         latitude = None
