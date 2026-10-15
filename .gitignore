@@ -4,3 +4,6 @@ __pycache__/
 *.egg-info/
 .env
 *.pyc
+
+# Local validation datasets
+data/validation-sample-1000.json

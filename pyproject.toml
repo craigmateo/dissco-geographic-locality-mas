@@ -7,7 +7,10 @@ name = "dissco-geographic-locality-mas"
 version = "0.1.0"
 description = "Geographic locality enrichment prototype for DiSSCo specimens"
 requires-python = ">=3.10"
-dependencies = []
+dependencies = [
+    "shapely>=2.0",
+    "pyproj>=3.6",
+]
 
 [project.optional-dependencies]
 dev = ["pytest>=8"]
